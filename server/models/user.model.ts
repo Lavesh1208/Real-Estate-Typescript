@@ -1,4 +1,6 @@
 import mongoose, { Document, Schema } from 'mongoose';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
 export interface UserInput extends Document {
    username: string;
@@ -38,6 +40,42 @@ const userSchema = new Schema<UserDocument>(
       timestamps: true,
    },
 );
+
+userSchema.pre('save', async function (next) {
+   let user = this as UserDocument;
+
+   if (!user.isModified('password')) {
+      return next();
+   }
+   const saltWorkFactor = process.env.SALT_WORK_FACTOR;
+   const salt = await bcrypt.genSalt(Number(saltWorkFactor));
+
+   const hash = await bcrypt.hashSync(user.password, salt);
+
+   user.password = hash;
+
+   return next();
+});
+
+userSchema.methods.comparePassword = async function (
+   candidatePassword: string,
+): Promise<boolean> {
+   const user = this as UserDocument;
+
+   return bcrypt.compare(candidatePassword, user.password).catch((e) => false);
+};
+
+userSchema.methods.getJWTToken = function () {
+   return jwt.sign(
+      {
+         userId: this._id,
+      },
+      process.env.JWT_SECRET as string,
+      {
+         expiresIn: '1d',
+      },
+   );
+};
 
 const User = mongoose.model<UserDocument>('User', userSchema);
 

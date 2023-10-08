@@ -6,7 +6,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import path from 'path';
 import { dbConnection } from './dbConfig/dbConnection';
-// import router from "./routes";
+import router from './routes';
 // import ErrorHandler from "./utils/ErrorHandler";
 
 dotenv.config();
@@ -22,7 +22,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
-// app.use(router);
+app.use(router);
 
 // app.all("*", (req, res, next) => {
 // 	next(new ErrorHandler("Page Not Found", 404));
