@@ -7,7 +7,7 @@ import morgan from 'morgan';
 import path from 'path';
 import { dbConnection } from './dbConfig/dbConnection';
 import router from './routes';
-// import ErrorHandler from "./utils/ErrorHandler";
+import ErrorHandler from './utils/ErrorHandler';
 
 dotenv.config();
 
@@ -24,25 +24,25 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 app.use(router);
 
-// app.all("*", (req, res, next) => {
-// 	next(new ErrorHandler("Page Not Found", 404));
-// });
+app.all('*', (req, res, next) => {
+   next(new ErrorHandler('Page Not Found', 404));
+});
 
-// const errorHandler = (
-// 	err: ErrorHandler,
-// 	req: Request,
-// 	res: Response,
-// 	next: NextFunction
-// ) => {
-// 	res.status(err.statusCode || 500).json({
-// 		success: false,
-// 		message: err.message || "Internal Server Error",
-// 	});
+const errorHandler = (
+   err: ErrorHandler,
+   req: Request,
+   res: Response,
+   next: NextFunction,
+) => {
+   res.status(err.statusCode || 500).json({
+      success: false,
+      message: err.message || 'Internal Server Error',
+   });
 
-// 	console.log({ stack: err.stack || "NO STACK" });
-// };
+   console.log({ stack: err.stack || 'NO STACK' });
+};
 
-// app.use(errorHandler);
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
