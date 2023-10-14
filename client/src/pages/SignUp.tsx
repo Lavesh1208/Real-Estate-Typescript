@@ -1,8 +1,14 @@
 import { Link } from 'react-router-dom';
 import InputField from './InputField';
-import { useForm, FieldValues, SubmitHandler } from 'react-hook-form';
+import { useForm, SubmitHandler, FieldValues } from 'react-hook-form';
+import { useSignupUserMutation } from '../store/api/userApi';
+import { useEffect } from 'react';
+import { CustomeErrorType } from '../@types/errorTypes';
+import toast from 'react-hot-toast';
 
 const SignUp = () => {
+   const [signupUser, { data, isLoading, isSuccess, error }] =
+      useSignupUserMutation();
    const {
       register,
       handleSubmit,
@@ -16,7 +22,19 @@ const SignUp = () => {
       mode: 'onChange',
    });
 
-   const onSubmit: SubmitHandler<FieldValues> = async () => {};
+   const onSubmit: SubmitHandler<FieldValues> = async (data: FieldValues) => {
+      await signupUser(data);
+   };
+
+   useEffect(() => {
+      if (error) {
+         const errorMessage = (error as CustomeErrorType).data?.message;
+         toast.error(errorMessage);
+         console.log(error);
+      } else if (isSuccess) {
+         toast.success('User Created Successfully!');
+      }
+   }, [error, isSuccess, data]);
 
    return (
       <div className="p-3 max-w-lg mx-auto">
@@ -51,9 +69,10 @@ const SignUp = () => {
 
             <button
                type="submit"
+               disabled={isLoading}
                className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
             >
-               Sign Up
+               {isLoading ? 'Loading...' : 'Sign Up'}
             </button>
          </form>
          <div className="flex gap-2 mt-5">

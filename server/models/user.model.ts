@@ -12,6 +12,8 @@ export interface UserInput extends Document {
 export interface UserDocument extends UserInput, Document {
    createdAt: Date;
    updatedAt: Date;
+   getJWTToken(): string;
+   comparePassword(candidatePassword: string): Promise<Boolean>;
 }
 
 const userSchema = new Schema<UserDocument>(

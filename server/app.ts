@@ -16,7 +16,14 @@ const app = express();
 app.use(express.static(path.join(__dirname, 'views/build')));
 
 app.use(helmet());
-app.use(cors());
+app.use(
+   cors({
+      origin: ['*', process.env.DEV_CLIENT_URL as string],
+      credentials: true,
+      optionsSuccessStatus: 200,
+      methods: ['GET', 'POST', 'PUT', 'DELETE'],
+   }),
+);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json({ limit: '10mb' }));
