@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import InputField from './InputField';
 import { useForm, SubmitHandler, FieldValues } from 'react-hook-form';
 import { useSignupUserMutation } from '../store/api/userApi';
@@ -22,6 +22,8 @@ const SignUp = () => {
       mode: 'onChange',
    });
 
+   const navigate = useNavigate();
+
    const onSubmit: SubmitHandler<FieldValues> = async (data: FieldValues) => {
       await signupUser(data);
    };
@@ -33,8 +35,9 @@ const SignUp = () => {
          console.log(error);
       } else if (isSuccess) {
          toast.success('User Created Successfully!');
+         navigate('/sign-in');
       }
-   }, [error, isSuccess, data]);
+   }, [error, isSuccess, data, navigate]);
 
    return (
       <div className="p-3 max-w-lg mx-auto">
