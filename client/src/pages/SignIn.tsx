@@ -5,6 +5,8 @@ import { useEffect } from 'react';
 import { CustomeErrorType } from '../@types/errorTypes';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { useSigninUserMutation } from '../store/api/userApi';
+import { useDispatch } from 'react-redux';
+import { signInFailure, signInSuccess } from '../store/reducers/userReducer';
 
 const SignIn = () => {
    const [signinUser, { data, isLoading, isSuccess, error }] =
@@ -22,6 +24,7 @@ const SignIn = () => {
    });
 
    const navigate = useNavigate();
+   const dispatch = useDispatch();
 
    const onSubmit: SubmitHandler<FieldValues> = async (data: FieldValues) => {
       await signinUser(data);
@@ -30,13 +33,15 @@ const SignIn = () => {
    useEffect(() => {
       if (error) {
          const errorMessage = (error as CustomeErrorType).data?.message;
+         dispatch(signInFailure(errorMessage));
          toast.error(errorMessage);
          console.log(error);
       } else if (isSuccess) {
+         dispatch(signInSuccess(data));
          toast.success('Welcome Back!');
          navigate('/');
       }
-   }, [error, isSuccess, data, navigate]);
+   }, [error, isSuccess, data, navigate, dispatch]);
    return (
       <div className="p-3 max-w-lg mx-auto">
          <h1 className="text-3xl text-center font-semibold my-7">Sign Up</h1>
