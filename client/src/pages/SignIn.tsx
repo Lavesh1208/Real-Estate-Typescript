@@ -7,10 +7,12 @@ import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { useSigninUserMutation } from '../store/api/userApi';
 import { useDispatch } from 'react-redux';
 import { signInFailure, signInSuccess } from '../store/reducers/userReducer';
+import OAuth from '../components/OAuth';
 
 const SignIn = () => {
    const [signinUser, { data, isLoading, isSuccess, error }] =
       useSigninUserMutation();
+
    const {
       register,
       handleSubmit,
@@ -36,7 +38,8 @@ const SignIn = () => {
          dispatch(signInFailure(errorMessage));
          toast.error(errorMessage);
          console.log(error);
-      } else if (isSuccess) {
+      } else if (isSuccess && data) {
+         console.log(data);
          dispatch(signInSuccess(data));
          toast.success('Welcome Back!');
          navigate('/');
@@ -72,6 +75,7 @@ const SignIn = () => {
             >
                {isLoading ? 'Loading...' : 'Sign In'}
             </button>
+            <OAuth />
          </form>
          <div className="flex gap-2 mt-5">
             <p>Dont have an account?</p>

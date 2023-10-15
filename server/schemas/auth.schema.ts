@@ -26,6 +26,20 @@ export const loginUserSchema = object({
    }),
 });
 
+export const googleSigninSchema = object({
+   body: object({
+      username: string({
+         required_error: 'Username is required',
+      }),
+      email: string({
+         required_error: 'email is required',
+      }).email('Not a valid Email'),
+      avatar: string(),
+   }),
+});
+
 export type SignupUserInput = TypeOf<typeof signupUserSchema>;
 
 export type LoginUserInput = TypeOf<typeof loginUserSchema>;
+
+export type GoogleSigninInput = TypeOf<typeof googleSigninSchema>;

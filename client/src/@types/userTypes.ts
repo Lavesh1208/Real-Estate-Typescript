@@ -6,3 +6,9 @@ export interface IUser {
    createdAt: string;
    updatedAt: string;
 }
+
+export interface IGoogleSignin {
+   username: string;
+   email: string;
+   avatar: string;
+}

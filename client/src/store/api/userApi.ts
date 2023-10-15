@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { FieldValues } from 'react-hook-form';
-import { IUser } from '../../@types/userTypes';
+import { IGoogleSignin, IUser } from '../../@types/userTypes';
 
 export const userApi = createApi({
    reducerPath: 'userApi',
@@ -26,7 +26,19 @@ export const userApi = createApi({
          }),
          invalidatesTags: ['User'],
       }),
+      googleSignin: builder.mutation<IUser, IGoogleSignin>({
+         query: (user) => ({
+            url: '/google',
+            method: 'POST',
+            body: user,
+         }),
+         invalidatesTags: ['User'],
+      }),
    }),
 });
 
-export const { useSignupUserMutation, useSigninUserMutation } = userApi;
+export const {
+   useSignupUserMutation,
+   useSigninUserMutation,
+   useGoogleSigninMutation,
+} = userApi;

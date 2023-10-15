@@ -5,6 +5,7 @@ import { useSignupUserMutation } from '../store/api/userApi';
 import { useEffect } from 'react';
 import { CustomeErrorType } from '../@types/errorTypes';
 import toast from 'react-hot-toast';
+import OAuth from '../components/OAuth';
 
 const SignUp = () => {
    const [signupUser, { data, isLoading, isSuccess, error }] =
@@ -77,6 +78,7 @@ const SignUp = () => {
             >
                {isLoading ? 'Loading...' : 'Sign Up'}
             </button>
+            <OAuth />
          </form>
          <div className="flex gap-2 mt-5">
             <p>Have an account?</p>

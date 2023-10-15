@@ -2,7 +2,16 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/dist/query';
 import { userApi } from './api/userApi';
 import userReducer from './reducers/userReducer';
-import { persistReducer, persistStore } from 'redux-persist';
+import {
+   persistStore,
+   persistReducer,
+   FLUSH,
+   REHYDRATE,
+   PAUSE,
+   PERSIST,
+   PURGE,
+   REGISTER,
+} from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
 const rootReducer = combineReducers({
@@ -20,7 +29,12 @@ const persistedReducer = persistReducer(persistCongig, rootReducer);
 
 export const store = configureStore({
    reducer: persistedReducer,
-   middleware: (getDefault) => getDefault().concat([userApi.middleware]),
+   middleware: (getDefault) =>
+      getDefault({
+         serializableCheck: {
+            ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+         },
+      }).concat([userApi.middleware]),
 });
 
 setupListeners(store.dispatch);
