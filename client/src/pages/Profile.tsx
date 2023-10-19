@@ -2,23 +2,70 @@ import InputField from './InputField';
 import { useForm, SubmitHandler, FieldValues } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
+import { useEffect, useRef, useState } from 'react';
+import {
+   getDownloadURL,
+   getStorage,
+   ref,
+   uploadBytesResumable,
+} from 'firebase/storage';
+import { app } from '../firebase';
 
 const Profile = () => {
+   const [file, setFile] = useState<File | null>();
+   const [filePerc, setFilePerc] = useState(0);
+   const [fileUploadError, setFileUploadError] = useState(false);
+   const [imgUrl, setImgUrl] = useState('');
+
    const { currentUser } = useSelector((state: RootState) => state.user);
+
    const {
       register,
       handleSubmit,
       formState: { errors },
    } = useForm<FieldValues>({
       defaultValues: {
-         username: '',
-         email: '',
+         username: currentUser?.username,
+         email: currentUser?.email,
          password: '',
       },
       mode: 'onChange',
    });
 
+   const fileRef = useRef<HTMLInputElement>(null);
+
    const onSubmit: SubmitHandler<FieldValues> = async () => {};
+
+   const handleFileUpload = (file: File) => {
+      const storage = getStorage(app);
+      const fileName = new Date().getTime() + file.name;
+      const storageRef = ref(storage, fileName);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      uploadTask.on(
+         'state_changed',
+         (snapshot) => {
+            const progress =
+               (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            setFilePerc(Math.round(progress));
+         },
+         (error) => {
+            setFileUploadError(true);
+            console.log(error);
+         },
+         () => {
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) =>
+               setImgUrl(downloadURL),
+            );
+         },
+      );
+   };
+
+   useEffect(() => {
+      if (file) {
+         handleFileUpload(file);
+      }
+   }, [file]);
 
    return (
       <div className="p3 max-w-lg mx-auto">
@@ -27,11 +74,32 @@ const Profile = () => {
             onSubmit={handleSubmit(onSubmit)}
             className="flex flex-col gap-4"
          >
+            <input
+               onChange={(e) => setFile(e.target.files?.[0])}
+               type="file"
+               ref={fileRef}
+               hidden
+               accept="image/*"
+            />
             <img
-               src={currentUser?.avatar}
+               onClick={() => fileRef.current?.click()}
+               src={imgUrl.length > 0 ? imgUrl : currentUser?.avatar}
                alt="User Prolife"
                className="rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2"
             />
+            <p className="text-sm self-center">
+               {fileUploadError ? (
+                  <span className="text-red-700">Error uploading image</span>
+               ) : filePerc > 0 && filePerc < 100 ? (
+                  <span className="text-slate-700">{`Uploading ${filePerc}%`}</span>
+               ) : filePerc === 100 ? (
+                  <span className="text-green-700">
+                     Image successfully uploaded!
+                  </span>
+               ) : (
+                  ''
+               )}
+            </p>
             <InputField
                id="username"
                inputType="text"
