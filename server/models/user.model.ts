@@ -44,11 +44,14 @@ const userSchema = new Schema<UserDocument>(
 );
 
 userSchema.pre('save', async function (next) {
+   console.log('pre save');
    let user = this as UserDocument;
 
-   if (!user.isModified('password')) {
+   if (user.isModified('password')) {
+      console.log('not modified');
       return next();
    }
+   console.log('is modified');
    const saltWorkFactor = process.env.SALT_WORK_FACTOR;
    const salt = await bcrypt.genSalt(Number(saltWorkFactor));
 

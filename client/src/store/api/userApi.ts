@@ -1,34 +1,17 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { FieldValues } from 'react-hook-form';
-import { IGoogleSignin, IUser } from '../../@types/userTypes';
+import { IUpdateUser, IUser } from '../../@types/userTypes';
 
 export const userApi = createApi({
    reducerPath: 'userApi',
    baseQuery: fetchBaseQuery({
-      baseUrl: 'http://localhost:8000/auth',
+      baseUrl: 'http://localhost:8000/user',
       credentials: 'include',
    }),
    tagTypes: ['User'],
    endpoints: (builder) => ({
-      signupUser: builder.mutation<IUser, FieldValues>({
+      updateUser: builder.mutation<IUser, IUpdateUser>({
          query: (user) => ({
-            url: '/signup',
-            method: 'POST',
-            body: user,
-         }),
-         invalidatesTags: ['User'],
-      }),
-      signinUser: builder.mutation<IUser, FieldValues>({
-         query: (user) => ({
-            url: '/signin',
-            method: 'POST',
-            body: user,
-         }),
-         invalidatesTags: ['User'],
-      }),
-      googleSignin: builder.mutation<IUser, IGoogleSignin>({
-         query: (user) => ({
-            url: '/google',
+            url: `/update/${user._id}`,
             method: 'POST',
             body: user,
          }),
@@ -37,8 +20,4 @@ export const userApi = createApi({
    }),
 });
 
-export const {
-   useSignupUserMutation,
-   useSigninUserMutation,
-   useGoogleSigninMutation,
-} = userApi;
+export const { useUpdateUserMutation } = userApi;

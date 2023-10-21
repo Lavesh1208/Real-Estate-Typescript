@@ -1,6 +1,6 @@
 import InputField from './InputField';
 import { useForm, SubmitHandler, FieldValues } from 'react-hook-form';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { useEffect, useRef, useState } from 'react';
 import {
@@ -10,14 +10,21 @@ import {
    uploadBytesResumable,
 } from 'firebase/storage';
 import { app } from '../firebase';
+import { useUpdateUserMutation } from '../store/api/userApi';
+import toast from 'react-hot-toast';
+import { CustomeErrorType } from '../@types/errorTypes';
+import { updateUserSuccess } from '../store/reducers/userReducer';
 
 const Profile = () => {
+   const [updateUser, { data, isSuccess, error }] = useUpdateUserMutation();
    const [file, setFile] = useState<File | null>();
    const [filePerc, setFilePerc] = useState(0);
    const [fileUploadError, setFileUploadError] = useState(false);
-   const [imgUrl, setImgUrl] = useState('');
 
    const { currentUser } = useSelector((state: RootState) => state.user);
+   const [imgUrl, setImgUrl] = useState(currentUser.avatar as string);
+
+   const dispatch = useDispatch();
 
    const {
       register,
@@ -34,7 +41,18 @@ const Profile = () => {
 
    const fileRef = useRef<HTMLInputElement>(null);
 
-   const onSubmit: SubmitHandler<FieldValues> = async () => {};
+   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+      const user =
+         data.password.length > 0
+            ? { ...data, _id: currentUser?._id, avatar: imgUrl }
+            : {
+                 username: data.username,
+                 email: data.email,
+                 _id: currentUser?._id,
+                 avatar: imgUrl,
+              };
+      await updateUser(user);
+   };
 
    const handleFileUpload = (file: File) => {
       const storage = getStorage(app);
@@ -66,6 +84,17 @@ const Profile = () => {
          handleFileUpload(file);
       }
    }, [file]);
+
+   useEffect(() => {
+      if (error) {
+         const errorMessage = (error as CustomeErrorType).data?.message;
+         toast.error(errorMessage);
+         console.log(error);
+      } else if (isSuccess && data) {
+         toast.success('User Updated Successfully!');
+         dispatch(updateUserSuccess(data));
+      }
+   }, [error, isSuccess, data, dispatch]);
 
    return (
       <div className="p3 max-w-lg mx-auto">

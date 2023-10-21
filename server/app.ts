@@ -8,6 +8,7 @@ import path from 'path';
 import { dbConnection } from './dbConfig/dbConnection';
 import router from './routes';
 import ErrorHandler from './utils/ErrorHandler';
+import cookieParser from 'cookie-parser';
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ app.use(
       methods: ['GET', 'POST', 'PUT', 'DELETE'],
    }),
 );
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json({ limit: '10mb' }));
@@ -45,8 +47,6 @@ const errorHandler = (
       success: false,
       message: err.message || 'Internal Server Error',
    });
-
-   console.log({ stack: err.stack || 'NO STACK' });
 };
 
 app.use(errorHandler);

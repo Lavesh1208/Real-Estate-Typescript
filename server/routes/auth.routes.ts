@@ -2,17 +2,22 @@ import express from 'express';
 import validateResource from '../middlewares/validateResource';
 import {
    googleSigninSchema,
-   loginUserSchema,
-   signupUserSchema,
+   loginSchema,
+   signupSchema,
 } from '../schemas/auth.schema';
 import { googleSignin, signin, signup } from '../controller/auth.controller';
+import { catchAsync } from '../middlewares/catchAsync';
 
 const router = express.Router();
 
-router.post('/signup', validateResource(signupUserSchema), signup);
+router.post('/signup', validateResource(signupSchema), catchAsync(signup));
 
-router.post('/signin', validateResource(loginUserSchema), signin);
+router.post('/signin', validateResource(loginSchema), catchAsync(signin));
 
-router.post('/google', validateResource(googleSigninSchema), googleSignin);
+router.post(
+   '/google',
+   validateResource(googleSigninSchema),
+   catchAsync(googleSignin),
+);
 
 export default router;

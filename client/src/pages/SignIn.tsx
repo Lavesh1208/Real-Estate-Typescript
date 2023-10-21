@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import { useEffect } from 'react';
 import { CustomeErrorType } from '../@types/errorTypes';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
-import { useSigninUserMutation } from '../store/api/userApi';
+import { useSigninUserMutation } from '../store/api/authApi';
 import { useDispatch } from 'react-redux';
 import { signInFailure, signInSuccess } from '../store/reducers/userReducer';
 import OAuth from '../components/OAuth';
@@ -56,6 +56,7 @@ const SignIn = () => {
                id="email"
                inputType="email"
                placeHolderText="Email"
+               isRequired
                register={register}
                errors={errors}
             />
@@ -64,6 +65,7 @@ const SignIn = () => {
                id="password"
                inputType="password"
                placeHolderText="Password"
+               isRequired
                register={register}
                errors={errors}
             />

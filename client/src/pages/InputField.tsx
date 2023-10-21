@@ -5,6 +5,7 @@ interface InputfieldProps {
    inputType: string;
    defaultValue?: string | number;
    placeHolderText: string;
+   isRequired?: boolean;
    register: UseFormRegister<FieldValues>;
    errors: FieldErrors;
 }
@@ -13,6 +14,7 @@ const InputField: React.FC<InputfieldProps> = ({
    id,
    inputType,
    placeHolderText,
+   isRequired,
    register,
    errors,
 }) => {
@@ -26,9 +28,8 @@ const InputField: React.FC<InputfieldProps> = ({
             {...register(id, {
                value: true,
                required:
-                  id === 'newPassword'
-                     ? false
-                     : `${id[0].toUpperCase() + id.slice(1)} is required`,
+                  isRequired &&
+                  `${id[0].toUpperCase() + id.slice(1)} is required`,
             })}
          />
 

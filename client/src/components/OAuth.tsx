@@ -1,6 +1,6 @@
 import { GoogleAuthProvider, getAuth, signInWithPopup } from 'firebase/auth';
 import { app } from '../firebase';
-import { useGoogleSigninMutation } from '../store/api/userApi';
+import { useGoogleSigninMutation } from '../store/api/authApi';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import toast from 'react-hot-toast';

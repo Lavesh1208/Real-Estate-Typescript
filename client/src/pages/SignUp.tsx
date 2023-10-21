@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import InputField from './InputField';
 import { useForm, SubmitHandler, FieldValues } from 'react-hook-form';
-import { useSignupUserMutation } from '../store/api/userApi';
+import { useSignupUserMutation } from '../store/api/authApi';
 import { useEffect } from 'react';
 import { CustomeErrorType } from '../@types/errorTypes';
 import toast from 'react-hot-toast';
@@ -51,6 +51,7 @@ const SignUp = () => {
                id="username"
                inputType="text"
                placeHolderText="Username"
+               isRequired
                register={register}
                errors={errors}
             />
@@ -59,6 +60,7 @@ const SignUp = () => {
                id="email"
                inputType="email"
                placeHolderText="Email"
+               isRequired
                register={register}
                errors={errors}
             />
@@ -67,6 +69,7 @@ const SignUp = () => {
                id="password"
                inputType="password"
                placeHolderText="Password"
+               isRequired
                register={register}
                errors={errors}
             />
