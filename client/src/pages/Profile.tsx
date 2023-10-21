@@ -10,13 +10,22 @@ import {
    uploadBytesResumable,
 } from 'firebase/storage';
 import { app } from '../firebase';
-import { useUpdateUserMutation } from '../store/api/userApi';
+import {
+   useDeleteUserMutation,
+   useUpdateUserMutation,
+} from '../store/api/userApi';
 import toast from 'react-hot-toast';
 import { CustomeErrorType } from '../@types/errorTypes';
-import { updateUserSuccess } from '../store/reducers/userReducer';
+import {
+   deleteUserSuccess,
+   updateUserSuccess,
+} from '../store/reducers/userReducer';
 
 const Profile = () => {
    const [updateUser, { data, isSuccess, error }] = useUpdateUserMutation();
+   const [deleteUser, { isSuccess: isDeleteSuccess, error: errorDelete }] =
+      useDeleteUserMutation();
+
    const [file, setFile] = useState<File | null>();
    const [filePerc, setFilePerc] = useState(0);
    const [fileUploadError, setFileUploadError] = useState(false);
@@ -79,6 +88,10 @@ const Profile = () => {
       );
    };
 
+   const handleDeleteUser = async () => {
+      await deleteUser(currentUser?._id);
+   };
+
    useEffect(() => {
       if (file) {
          handleFileUpload(file);
@@ -96,6 +109,16 @@ const Profile = () => {
       }
    }, [error, isSuccess, data, dispatch]);
 
+   useEffect(() => {
+      if (errorDelete) {
+         const errorMessage = (errorDelete as CustomeErrorType).data?.message;
+         toast.error(errorMessage);
+         console.log(errorDelete);
+      } else if (isDeleteSuccess) {
+         toast.success('User Deleted Successfully!');
+         dispatch(deleteUserSuccess());
+      }
+   }, [errorDelete, isDeleteSuccess, dispatch]);
    return (
       <div className="p3 max-w-lg mx-auto">
          <h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
@@ -157,7 +180,12 @@ const Profile = () => {
             </button>
          </form>
          <div className="flex justify-between mt-5">
-            <span className="text-red-700 cursor-pointer">Delete account</span>
+            <span
+               className="text-red-700 cursor-pointer"
+               onClick={handleDeleteUser}
+            >
+               Delete account
+            </span>
             <span className="text-red-700 cursor-pointer">Sign out</span>
          </div>
       </div>

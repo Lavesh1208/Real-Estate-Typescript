@@ -13,4 +13,6 @@ router.post(
    catchAsync(updateUser),
 );
 
+router.delete('/delete/:id', verifyToken, catchAsync(updateUser));
+
 export default router;
