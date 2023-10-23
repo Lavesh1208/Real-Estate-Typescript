@@ -5,7 +5,12 @@ import {
    loginSchema,
    signupSchema,
 } from '../schemas/auth.schema';
-import { googleSignin, signin, signup } from '../controller/auth.controller';
+import {
+   googleSignin,
+   signOut,
+   signin,
+   signup,
+} from '../controller/auth.controller';
 import { catchAsync } from '../middlewares/catchAsync';
 
 const router = express.Router();
@@ -19,5 +24,7 @@ router.post(
    validateResource(googleSigninSchema),
    catchAsync(googleSignin),
 );
+
+router.post('/signout', catchAsync(signOut));
 
 export default router;

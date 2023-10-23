@@ -93,3 +93,12 @@ export const googleSignin = async (
       res.status(200).send(omit(newUser.toJSON(), 'password'));
    }
 };
+
+export const signOut = async (
+   req: Request,
+   res: Response,
+   next: NextFunction,
+) => {
+   res.clearCookie('access_token');
+   res.send({ message: 'User signed out' });
+};

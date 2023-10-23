@@ -17,14 +17,20 @@ import {
 import toast from 'react-hot-toast';
 import { CustomeErrorType } from '../@types/errorTypes';
 import {
+   deleteUserFailure,
    deleteUserSuccess,
+   signOutUserFailure,
+   signOutUserSuccess,
    updateUserSuccess,
 } from '../store/reducers/userReducer';
+import { useSignOutMutation } from '../store/api/authApi';
 
 const Profile = () => {
    const [updateUser, { data, isSuccess, error }] = useUpdateUserMutation();
    const [deleteUser, { isSuccess: isDeleteSuccess, error: errorDelete }] =
       useDeleteUserMutation();
+   const [signOut, { isSuccess: isSignOutSuccess, error: errorSignOut }] =
+      useSignOutMutation();
 
    const [file, setFile] = useState<File | null>();
    const [filePerc, setFilePerc] = useState(0);
@@ -92,6 +98,10 @@ const Profile = () => {
       await deleteUser(currentUser?._id);
    };
 
+   const handleSignOut = async () => {
+      await signOut();
+   };
+
    useEffect(() => {
       if (file) {
          handleFileUpload(file);
@@ -114,11 +124,27 @@ const Profile = () => {
          const errorMessage = (errorDelete as CustomeErrorType).data?.message;
          toast.error(errorMessage);
          console.log(errorDelete);
+         dispatch(deleteUserFailure(errorMessage));
       } else if (isDeleteSuccess) {
          toast.success('User Deleted Successfully!');
          dispatch(deleteUserSuccess());
       }
    }, [errorDelete, isDeleteSuccess, dispatch]);
+
+   useEffect(() => {
+      if (errorSignOut) {
+         const errorMessage = (errorSignOut as CustomeErrorType).data?.message;
+         toast.error(errorMessage);
+         dispatch(signOutUserFailure(errorMessage));
+         dispatch(deleteUserFailure(errorMessage));
+         console.log(errorSignOut);
+      } else if (isSignOutSuccess) {
+         toast.success('User Signed Out Successfully!');
+         dispatch(signOutUserSuccess());
+         dispatch(deleteUserSuccess());
+      }
+   }, [errorSignOut, isSignOutSuccess, dispatch]);
+
    return (
       <div className="p3 max-w-lg mx-auto">
          <h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
@@ -186,7 +212,12 @@ const Profile = () => {
             >
                Delete account
             </span>
-            <span className="text-red-700 cursor-pointer">Sign out</span>
+            <span
+               onClick={handleSignOut}
+               className="text-red-700 cursor-pointer"
+            >
+               Sign out
+            </span>
          </div>
       </div>
    );

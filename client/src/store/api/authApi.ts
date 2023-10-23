@@ -34,6 +34,13 @@ export const authApi = createApi({
          }),
          invalidatesTags: ['AuthUser'],
       }),
+      signOut: builder.mutation<void, void>({
+         query: () => ({
+            url: '/signout',
+            method: 'POST',
+         }),
+         invalidatesTags: ['AuthUser'],
+      }),
    }),
 });
 
@@ -41,4 +48,5 @@ export const {
    useSignupUserMutation,
    useSigninUserMutation,
    useGoogleSigninMutation,
+   useSignOutMutation,
 } = authApi;
