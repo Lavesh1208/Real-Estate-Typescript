@@ -24,6 +24,7 @@ import {
    updateUserSuccess,
 } from '../store/reducers/userReducer';
 import { useSignOutMutation } from '../store/api/authApi';
+import { Link } from 'react-router-dom';
 
 const Profile = () => {
    const [updateUser, { data, isSuccess, error }] = useUpdateUserMutation();
@@ -204,6 +205,12 @@ const Profile = () => {
             <button className="bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80">
                Update
             </button>
+            <Link
+               className="bg-green-700 text-white p-3 rounded-lg uppercase text-center hover:opacity-95"
+               to={'/create-listing'}
+            >
+               Create Listing
+            </Link>
          </form>
          <div className="flex justify-between mt-5">
             <span

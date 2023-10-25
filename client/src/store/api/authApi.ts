@@ -5,7 +5,7 @@ import { IGoogleSignin, IUser } from '../../@types/userTypes';
 export const authApi = createApi({
    reducerPath: 'userApi',
    baseQuery: fetchBaseQuery({
-      baseUrl: 'http://localhost:8000/auth',
+      baseUrl: 'http://localhost:8000/api/auth/',
       credentials: 'include',
    }),
    tagTypes: ['AuthUser'],

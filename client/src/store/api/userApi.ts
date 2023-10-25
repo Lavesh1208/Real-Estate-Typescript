@@ -4,7 +4,7 @@ import { IUpdateUser, IUser } from '../../@types/userTypes';
 export const userApi = createApi({
    reducerPath: 'userApi',
    baseQuery: fetchBaseQuery({
-      baseUrl: 'http://localhost:8000/user',
+      baseUrl: 'http://localhost:8000/api/user/',
       credentials: 'include',
    }),
    tagTypes: ['User'],
