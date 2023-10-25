@@ -39,7 +39,6 @@ const SignIn = () => {
          toast.error(errorMessage);
          console.log(error);
       } else if (isSuccess && data) {
-         console.log(data);
          dispatch(signInSuccess(data));
          toast.success('Welcome Back!');
          navigate('/');

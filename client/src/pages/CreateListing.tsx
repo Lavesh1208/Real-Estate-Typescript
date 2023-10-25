@@ -4,10 +4,20 @@ import {
    ref,
    uploadBytesResumable,
 } from 'firebase/storage';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { app } from '../firebase';
+import { RootState } from '../store/store';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { useCreateListingMutation } from '../store/api/listingApi';
+import toast from 'react-hot-toast';
+import { CustomeErrorType } from '../@types/errorTypes';
 
 export default function CreateListing() {
+   const { currentUser } = useSelector((state: RootState) => state.user);
+   const [createListing, { data, isSuccess, error }] =
+      useCreateListingMutation();
+   const navigate = useNavigate();
    const [files, setFiles] = useState<FileList | null>();
    const [formData, setFormData] = useState({
       imageUrls: [],
@@ -27,10 +37,9 @@ export default function CreateListing() {
       false,
    );
    const [uploading, setUploading] = useState(false);
-   const [error, setError] = useState(false);
    const [loading, setLoading] = useState(false);
 
-   const handleImageSubmit = (e) => {
+   const handleImageSubmit = () => {
       if (
          files &&
          files.length > 0 &&
@@ -131,12 +140,48 @@ export default function CreateListing() {
       }
    };
 
+   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      if (formData.imageUrls.length < 1)
+         return toast.error('You must upload at least one image');
+      if (+formData.regularPrice < +formData.discountPrice)
+         return toast.error('Discount price must be lower than regular price');
+      setLoading(true);
+      const body = {
+         ...formData,
+         bedrooms: Number(formData.bedrooms),
+         bathrooms: Number(formData.bathrooms),
+         regularPrice: Number(formData.regularPrice),
+         discountPrice: Number(formData.discountPrice),
+         userRef: currentUser?._id,
+      };
+      console.log(body);
+      await createListing(body);
+      setLoading(false);
+   };
+
+   useEffect(() => {
+      if (error) {
+         const errorMessage = (error as CustomeErrorType).data?.message;
+         toast.error(errorMessage);
+         console.log(error);
+         setLoading(false);
+      } else if (isSuccess && data) {
+         toast.success('Listing Created Successfully!');
+         navigate('/profile');
+         setLoading(false);
+      }
+   }, [error, isSuccess, data, navigate]);
+
    return (
       <main className="p-3 max-w-4xl mx-auto">
          <h1 className="text-3xl font-semibold text-center my-7">
             Create a Listing
          </h1>
-         <form className="flex flex-col sm:flex-row gap-4">
+         <form
+            onSubmit={handleSubmit}
+            className="flex flex-col sm:flex-row gap-4"
+         >
             <div className="flex flex-col gap-4 flex-1">
                <input
                   type="text"
@@ -150,7 +195,6 @@ export default function CreateListing() {
                   value={formData.name}
                />
                <textarea
-                  type="text"
                   placeholder="Description"
                   className="border p-3 rounded-lg"
                   id="description"
@@ -341,7 +385,6 @@ export default function CreateListing() {
                >
                   {loading ? 'Creating...' : 'Create listing'}
                </button>
-               {error && <p className="text-red-700 text-sm">{error}</p>}
             </div>
          </form>
       </main>
