@@ -1,6 +1,6 @@
 import { TypeOf, object, string } from 'zod';
 
-export const updateUserSchema = object({
+const payload = {
    body: object({
       username: string({
          required_error: 'Username is required',
@@ -20,6 +20,24 @@ export const updateUserSchema = object({
    params: object({
       id: string(),
    }),
+};
+
+const params = {
+   params: object({
+      id: string({
+         required_error: 'User ID is required',
+      }),
+   }),
+};
+
+export const updateUserSchema = object({
+   ...payload,
+});
+
+export const getListingsSchema = object({
+   ...params,
 });
 
 export type UpdateUserInput = TypeOf<typeof updateUserSchema>;
+
+export type GetListingsInput = TypeOf<typeof getListingsSchema>;

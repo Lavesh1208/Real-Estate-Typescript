@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 import User from '../models/user.model';
 import bcrypt from 'bcryptjs';
-import { UpdateUserInput } from '../schemas/user.schema';
+import { GetListingsInput, UpdateUserInput } from '../schemas/user.schema';
 import ErrorHandler from '../utils/ErrorHandler';
 import { omit, update } from 'lodash';
+import Listing from '../models/listing.model';
 
 export const updateUser = async (
    req: Request<UpdateUserInput['params'], {}, UpdateUserInput['body']>,
@@ -51,4 +52,16 @@ export const deleteUser = async (
    await User.findByIdAndDelete(req.params.id);
    res.clearCookie('access_token');
    res.send('User deleted');
+};
+
+export const getUserListings = async (
+   req: Request<GetListingsInput['params'], {}, {}>,
+   res: Response,
+   next: NextFunction,
+) => {
+   if (req.user.id !== req.params.id) {
+      return next(new ErrorHandler('Unauthorized', 401));
+   }
+   const listings = await Listing.find({ user: req.params.id });
+   res.status(200).send(listings);
 };
