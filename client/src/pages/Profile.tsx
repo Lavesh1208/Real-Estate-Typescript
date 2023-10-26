@@ -27,6 +27,7 @@ import { RootState } from '../store/store';
 import InputField from './InputField';
 import axios from 'axios';
 import { IListing } from '../@types/listingType';
+import { useDeleteListingMutation } from '../store/api/listingApi';
 
 const Profile = () => {
    const [updateUser, { data, isSuccess, error }] = useUpdateUserMutation();
@@ -34,6 +35,7 @@ const Profile = () => {
       useDeleteUserMutation();
    const [signOut, { isSuccess: isSignOutSuccess, error: errorSignOut }] =
       useSignOutMutation();
+   const [deleteListing] = useDeleteListingMutation();
 
    const [file, setFile] = useState<File | null>();
    const [filePerc, setFilePerc] = useState(0);
@@ -119,6 +121,16 @@ const Profile = () => {
       } catch (error) {
          setShowListingsError(true);
          console.log(showListingsError);
+      }
+   };
+
+   const handleListingDelete = async (id: string) => {
+      try {
+         await deleteListing(id);
+         toast.success('Listing Deleted Successfully');
+      } catch (error) {
+         console.log(error);
+         toast.error('Listing could not be deleted');
       }
    };
 
@@ -273,7 +285,10 @@ const Profile = () => {
                      </Link>
 
                      <div className="flex flex-col item-center">
-                        <button className="text-red-700 uppercase">
+                        <button
+                           onClick={() => handleListingDelete(listing._id)}
+                           className="text-red-700 uppercase"
+                        >
                            Delete
                         </button>
                         <Link to={`/update-listing/${listing._id}`}>

@@ -1,6 +1,6 @@
 import { TypeOf, array, boolean, number, object, string } from 'zod';
 
-export const createlistingSchema = object({
+const payload = {
    body: object({
       name: string({
          required_error: 'title is required',
@@ -44,6 +44,24 @@ export const createlistingSchema = object({
          required_error: 'userRef is required',
       }),
    }),
+};
+
+const params = {
+   params: object({
+      id: string({
+         required_error: 'listingId is required',
+      }),
+   }),
+};
+
+export const createlistingSchema = object({
+   ...payload,
+});
+
+export const deleteListingSchema = object({
+   ...params,
 });
 
 export type CreateListingInput = TypeOf<typeof createlistingSchema>;
+
+export type DeleteListingInput = TypeOf<typeof deleteListingSchema>;

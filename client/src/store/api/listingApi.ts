@@ -18,7 +18,15 @@ export const listingApi = createApi({
          }),
          invalidatesTags: ['Listings'],
       }),
+      deleteListing: builder.mutation<IListing, string>({
+         query: (id) => ({
+            url: `/delete/${id}`,
+            method: 'DELETE',
+         }),
+         invalidatesTags: ['Listings'],
+      }),
    }),
 });
 
-export const { useCreateListingMutation } = listingApi;
+export const { useCreateListingMutation, useDeleteListingMutation } =
+   listingApi;

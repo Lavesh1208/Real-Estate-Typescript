@@ -8,7 +8,6 @@ import Header from './components/Header';
 import { Toaster } from 'react-hot-toast';
 import PrivateRoute from './components/PrivateRoute';
 import CreateListing from './pages/CreateListing';
-import UserListings from './pages/UserListings';
 
 function App() {
    return (
@@ -23,7 +22,6 @@ function App() {
                <Route element={<PrivateRoute />}>
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/create-listing" element={<CreateListing />} />
-                  <Route path="/user-listings" element={<UserListings />} />
                </Route>
             </Routes>
          </BrowserRouter>
