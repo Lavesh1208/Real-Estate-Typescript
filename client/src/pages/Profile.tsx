@@ -1,3 +1,4 @@
+import axios from 'axios';
 import {
    getDownloadURL,
    getStorage,
@@ -10,32 +11,18 @@ import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { CustomeErrorType } from '../@types/errorTypes';
+import { IListing } from '../@types/listingType';
+import DeleteUser from '../components/DeleteUser';
+import SignoutUser from '../components/SignoutUser';
+import UserListings from '../components/UserListings';
 import { app } from '../firebase';
-import { useSignOutMutation } from '../store/api/authApi';
-import {
-   useDeleteUserMutation,
-   useUpdateUserMutation,
-} from '../store/api/userApi';
-import {
-   deleteUserFailure,
-   deleteUserSuccess,
-   signOutUserFailure,
-   signOutUserSuccess,
-   updateUserSuccess,
-} from '../store/reducers/userReducer';
+import { useUpdateUserMutation } from '../store/api/userApi';
+import { updateUserSuccess } from '../store/reducers/userReducer';
 import { RootState } from '../store/store';
 import InputField from './InputField';
-import axios from 'axios';
-import { IListing } from '../@types/listingType';
-import { useDeleteListingMutation } from '../store/api/listingApi';
 
 const Profile = () => {
    const [updateUser, { data, isSuccess, error }] = useUpdateUserMutation();
-   const [deleteUser, { isSuccess: isDeleteSuccess, error: errorDelete }] =
-      useDeleteUserMutation();
-   const [signOut, { isSuccess: isSignOutSuccess, error: errorSignOut }] =
-      useSignOutMutation();
-   const [deleteListing] = useDeleteListingMutation();
 
    const [file, setFile] = useState<File | null>();
    const [filePerc, setFilePerc] = useState(0);
@@ -101,14 +88,6 @@ const Profile = () => {
       );
    };
 
-   const handleDeleteUser = async () => {
-      await deleteUser(currentUser?._id);
-   };
-
-   const handleSignOut = async () => {
-      await signOut();
-   };
-
    const handleShowListings = async () => {
       try {
          setShowListingsError(false);
@@ -121,16 +100,6 @@ const Profile = () => {
       } catch (error) {
          setShowListingsError(true);
          console.log(showListingsError);
-      }
-   };
-
-   const handleListingDelete = async (id: string) => {
-      try {
-         await deleteListing(id);
-         toast.success('Listing Deleted Successfully');
-      } catch (error) {
-         console.log(error);
-         toast.error('Listing could not be deleted');
       }
    };
 
@@ -151,32 +120,6 @@ const Profile = () => {
       }
    }, [error, isSuccess, data, dispatch]);
 
-   useEffect(() => {
-      if (errorDelete) {
-         const errorMessage = (errorDelete as CustomeErrorType).data?.message;
-         toast.error(errorMessage);
-         console.log(errorDelete);
-         dispatch(deleteUserFailure(errorMessage));
-      } else if (isDeleteSuccess) {
-         toast.success('User Deleted Successfully!');
-         dispatch(deleteUserSuccess());
-      }
-   }, [errorDelete, isDeleteSuccess, dispatch]);
-
-   useEffect(() => {
-      if (errorSignOut) {
-         const errorMessage = (errorSignOut as CustomeErrorType).data?.message;
-         toast.error(errorMessage);
-         dispatch(signOutUserFailure(errorMessage));
-         dispatch(deleteUserFailure(errorMessage));
-         console.log(errorSignOut);
-      } else if (isSignOutSuccess) {
-         toast.success('User Signed Out Successfully!');
-         dispatch(signOutUserSuccess());
-         dispatch(deleteUserSuccess());
-      }
-   }, [errorSignOut, isSignOutSuccess, dispatch]);
-
    return (
       <div className="p3 max-w-lg mx-auto">
          <h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
@@ -193,7 +136,7 @@ const Profile = () => {
             />
             <img
                onClick={() => fileRef.current?.click()}
-               src={imgUrl.length > 0 ? imgUrl : currentUser?.avatar}
+               src={!imgUrl ? currentUser?.avatar : imgUrl}
                alt="User Prolife"
                className="rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2"
             />
@@ -244,62 +187,14 @@ const Profile = () => {
             </Link>
          </form>
          <div className="flex justify-between mt-5">
-            <span
-               className="text-red-700 cursor-pointer"
-               onClick={handleDeleteUser}
-            >
-               Delete account
-            </span>
-            <span
-               onClick={handleSignOut}
-               className="text-red-700 cursor-pointer"
-            >
-               Sign out
-            </span>
+            <DeleteUser />
+            <SignoutUser />
          </div>
          <button onClick={handleShowListings} className="text-green-700 w-full">
             Show Listings
          </button>
          {userListings && userListings.length > 0 && (
-            <div className="flex flex-col gap-4">
-               <h1 className="text-center mt-7 text-2xl font-semibold">
-                  Your Listings
-               </h1>
-               {userListings.map((listing) => (
-                  <div
-                     key={listing._id}
-                     className="border rounded-lg p-3 flex justify-between items-center gap-4"
-                  >
-                     <Link to={`/listing/${listing._id}`}>
-                        <img
-                           src={listing.imageUrls[0]}
-                           alt="listing cover"
-                           className="h-16 w-16 object-contain"
-                        />
-                     </Link>
-                     <Link
-                        className="text-slate-700 font-semibold  hover:underline truncate flex-1"
-                        to={`/listing/${listing._id}`}
-                     >
-                        <p>{listing.name}</p>
-                     </Link>
-
-                     <div className="flex flex-col item-center">
-                        <button
-                           onClick={() => handleListingDelete(listing._id)}
-                           className="text-red-700 uppercase"
-                        >
-                           Delete
-                        </button>
-                        <Link to={`/update-listing/${listing._id}`}>
-                           <button className="text-green-700 uppercase">
-                              Edit
-                           </button>
-                        </Link>
-                     </div>
-                  </div>
-               ))}
-            </div>
+            <UserListings userListings={userListings} />
          )}
       </div>
    );
