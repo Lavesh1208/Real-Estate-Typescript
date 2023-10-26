@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { IUpdateUser, IUser } from '../../@types/userTypes';
+import { IListing } from '../../@types/listingType';
 
 export const userApi = createApi({
    reducerPath: 'userApi',
@@ -7,8 +8,15 @@ export const userApi = createApi({
       baseUrl: 'http://localhost:8000/api/user/',
       credentials: 'include',
    }),
-   tagTypes: ['User'],
+   tagTypes: ['User', 'UserListings'],
    endpoints: (builder) => ({
+      getUserListings: builder.query<IListing[], string>({
+         query: (id) => ({
+            url: `/listings/${id}`,
+            method: 'GET',
+         }),
+         providesTags: ['UserListings'],
+      }),
       updateUser: builder.mutation<IUser, IUpdateUser>({
          query: (user) => ({
             url: `/update/${user._id}`,
@@ -27,4 +35,8 @@ export const userApi = createApi({
    }),
 });
 
-export const { useUpdateUserMutation, useDeleteUserMutation } = userApi;
+export const {
+   useUpdateUserMutation,
+   useDeleteUserMutation,
+   useGetUserListingsQuery,
+} = userApi;

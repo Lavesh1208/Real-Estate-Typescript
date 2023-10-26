@@ -13,7 +13,7 @@ export interface IListing {
    offer: boolean;
    parking: boolean;
    furnished: boolean;
-   images: string[];
+   imageUrls: string[];
    createdAt: Date;
    updatedAt: Date;
 }
