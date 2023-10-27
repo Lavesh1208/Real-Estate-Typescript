@@ -6,6 +6,13 @@ import { IListing } from '../@types/listingType';
 import { useSelector } from 'react-redux';
 import { useUpdateListingMutation } from '../store/api/listingApi';
 import { RootState } from '../store/store';
+import {
+   getDownloadURL,
+   getStorage,
+   ref,
+   uploadBytesResumable,
+} from 'firebase/storage';
+import { app } from '../firebase';
 
 const UpdateListing = () => {
    const { currentUser } = useSelector((state: RootState) => state.user);
@@ -174,7 +181,7 @@ const UpdateListing = () => {
    return (
       <main className="p-3 max-w-4xl mx-auto">
          <h1 className="text-3xl font-semibold text-center my-7">
-            Create a Listing
+            Update Listing
          </h1>
          <form
             onSubmit={handleSubmit}
@@ -381,7 +388,7 @@ const UpdateListing = () => {
                   disabled={loading || uploading}
                   className="p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
                >
-                  {loading ? 'Creating...' : 'Create listing'}
+                  {loading ? 'Updating...' : 'Update listing'}
                </button>
             </div>
          </form>

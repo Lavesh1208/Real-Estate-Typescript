@@ -27,7 +27,7 @@ const persistConfig = {
    key: 'root',
    storage,
    version: 1,
-   blacklist: ['userApi.getUserListings'],
+   whiteList: ['user'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

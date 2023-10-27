@@ -8,8 +8,15 @@ export const listingApi = createApi({
       baseUrl: 'http://localhost:8000/api/listing/',
       credentials: 'include',
    }),
-   tagTypes: ['Listings'],
+   tagTypes: ['Listings', 'Listing'],
    endpoints: (builder) => ({
+      getListing: builder.query<IListing, string>({
+         query: (id) => ({
+            url: `/get/${id}`,
+            method: 'GET',
+         }),
+         providesTags: ['Listing'],
+      }),
       createListing: builder.mutation<IListing, FieldValues>({
          query: (body) => ({
             url: '/create',
@@ -37,6 +44,7 @@ export const listingApi = createApi({
 });
 
 export const {
+   useGetListingQuery,
    useCreateListingMutation,
    useDeleteListingMutation,
    useUpdateListingMutation,

@@ -1,3 +1,5 @@
+import { IUser } from './userTypes';
+
 export interface IListing {
    _id: string;
    name: string;
@@ -13,6 +15,7 @@ export interface IListing {
    parking: boolean;
    furnished: boolean;
    imageUrls: string[];
+   userRef: IUser;
    createdAt: Date;
    updatedAt: Date;
 }
