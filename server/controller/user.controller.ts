@@ -63,6 +63,5 @@ export const getUserListings = async (
       return next(new ErrorHandler('Unauthorized', 401));
    }
    const listings = await Listing.find({ userRef: req.params.id });
-   console.log(listings);
    res.status(200).send(listings);
 };

@@ -25,8 +25,19 @@ export const listingApi = createApi({
          }),
          invalidatesTags: ['Listings'],
       }),
+      updateListing: builder.mutation<IListing, FieldValues>({
+         query: ({ id, body }) => ({
+            url: `/update/${id}`,
+            method: 'PUT',
+            body: body,
+         }),
+         invalidatesTags: ['Listings'],
+      }),
    }),
 });
 
-export const { useCreateListingMutation, useDeleteListingMutation } =
-   listingApi;
+export const {
+   useCreateListingMutation,
+   useDeleteListingMutation,
+   useUpdateListingMutation,
+} = listingApi;

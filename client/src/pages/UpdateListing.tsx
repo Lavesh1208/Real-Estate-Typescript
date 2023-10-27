@@ -1,38 +1,36 @@
-import {
-   getDownloadURL,
-   getStorage,
-   ref,
-   uploadBytesResumable,
-} from 'firebase/storage';
-import { useEffect, useState } from 'react';
-import { app } from '../firebase';
-import { RootState } from '../store/store';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { useCreateListingMutation } from '../store/api/listingApi';
+import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { CustomeErrorType } from '../@types/errorTypes';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { IListing } from '../@types/listingType';
+import { useSelector } from 'react-redux';
+import { useUpdateListingMutation } from '../store/api/listingApi';
+import { RootState } from '../store/store';
 
-export default function CreateListing() {
+const UpdateListing = () => {
    const { currentUser } = useSelector((state: RootState) => state.user);
-   const [createListing, { data, isSuccess, error }] =
-      useCreateListingMutation();
+   const [updateListing, { data, isSuccess, error }] =
+      useUpdateListingMutation();
    const navigate = useNavigate();
+   const location = useLocation();
+   const listing = location.state.listing as IListing;
+
    const [files, setFiles] = useState<FileList | null>();
    const [formData, setFormData] = useState({
-      imageUrls: [],
-      name: '',
-      description: '',
-      address: '',
-      type: 'rent',
-      bedrooms: 1,
-      bathrooms: 1,
-      regularPrice: 50,
-      discountPrice: 0,
-      offer: false,
-      parking: false,
-      furnished: false,
+      imageUrls: listing.imageUrls,
+      name: listing.name,
+      description: listing.description,
+      address: listing.address,
+      type: listing.type,
+      bedrooms: listing.bedrooms,
+      bathrooms: listing.bathrooms,
+      regularPrice: listing.regularPrice,
+      discountPrice: listing.discountPrice,
+      offer: listing.offer,
+      parking: listing.parking,
+      furnished: listing.furnished,
    });
+
    const [imageUploadError, setImageUploadError] = useState<string | boolean>(
       false,
    );
@@ -155,7 +153,8 @@ export default function CreateListing() {
          discountPrice: Number(formData.discountPrice),
          userRef: currentUser?._id,
       };
-      await createListing(body);
+      console.log(body);
+      await updateListing({ body, id: listing._id });
       setLoading(false);
    };
 
@@ -388,4 +387,6 @@ export default function CreateListing() {
          </form>
       </main>
    );
-}
+};
+
+export default UpdateListing;

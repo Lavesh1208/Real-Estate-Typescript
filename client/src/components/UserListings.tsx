@@ -1,7 +1,7 @@
 import toast from 'react-hot-toast';
 import { IListing } from '../@types/listingType';
 import { useDeleteListingMutation } from '../store/api/listingApi';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 interface UserListingsProps {
    userListings: IListing[];
@@ -9,6 +9,7 @@ interface UserListingsProps {
 
 const UserListings: React.FC<UserListingsProps> = ({ userListings }) => {
    const [deleteListing] = useDeleteListingMutation();
+   const navigate = useNavigate();
 
    const handleListingDelete = async (id: string) => {
       try {
@@ -19,6 +20,7 @@ const UserListings: React.FC<UserListingsProps> = ({ userListings }) => {
          toast.error('Listing could not be deleted');
       }
    };
+
    return (
       <>
          <div className="flex flex-col gap-4">
@@ -51,11 +53,19 @@ const UserListings: React.FC<UserListingsProps> = ({ userListings }) => {
                      >
                         Delete
                      </button>
-                     <Link to={`/update-listing/${listing._id}`}>
-                        <button className="text-green-700 uppercase">
-                           Edit
-                        </button>
-                     </Link>
+
+                     <button
+                        onClick={() =>
+                           navigate(`/update-listing/${listing._id}`, {
+                              state: {
+                                 listing,
+                              },
+                           })
+                        }
+                        className="text-green-700 uppercase"
+                     >
+                        Edit
+                     </button>
                   </div>
                </div>
             ))}

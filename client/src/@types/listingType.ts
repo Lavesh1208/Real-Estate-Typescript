@@ -5,9 +5,8 @@ export interface IListing {
    address: string;
    type: 'rent' | 'sale';
    price: number;
-   numOfGuests: number;
-   numOfBeds: number;
-   numOfBaths: number;
+   bathrooms: number;
+   bedrooms: number;
    regularPrice: number;
    discountPrice: number;
    offer: boolean;

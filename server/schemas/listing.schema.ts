@@ -62,6 +62,19 @@ export const deleteListingSchema = object({
    ...params,
 });
 
+export const updateListingSchema = object({
+   ...params,
+   ...payload,
+});
+
+export const getListingSchema = object({
+   ...params,
+});
+
 export type CreateListingInput = TypeOf<typeof createlistingSchema>;
 
 export type DeleteListingInput = TypeOf<typeof deleteListingSchema>;
+
+export type UpdateListingInput = TypeOf<typeof updateListingSchema>;
+
+export type GetListingInput = TypeOf<typeof getListingSchema>;
