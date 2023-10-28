@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ListingItem from "../components/ListingItem";
 import { useFilterListingQuery } from "../store/api/listingApi";
+import ListingItem from "../components/ListingItem";
 
 const Search = () => {
 	const urlParams = new URLSearchParams(location.search);
