@@ -6,6 +6,7 @@ import {
    createListing,
    deleteListing,
    getListing,
+   getListings,
    updateListing,
 } from '../controller/listing.controller';
 import {
@@ -40,5 +41,7 @@ router.get(
    [validateResource(getListingSchema)],
    catchAsync(getListing),
 );
+
+router.get('/get', catchAsync(getListings));
 
 export default router;
