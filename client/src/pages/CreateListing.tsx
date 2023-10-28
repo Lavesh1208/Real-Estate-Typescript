@@ -105,11 +105,7 @@ export default function CreateListing() {
 		});
 	};
 
-	const handleChange = (
-		e:
-			| React.ChangeEvent<HTMLInputElement>
-			| React.ChangeEvent<HTMLTextAreaElement>
-	) => {
+	const handleChange = (e: any) => {
 		if (e.target.id === "sale" || e.target.id === "rent") {
 			setFormData({
 				...formData,

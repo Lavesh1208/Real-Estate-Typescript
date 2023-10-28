@@ -66,7 +66,7 @@ const Search = () => {
 		}
 	}, [listings, refetch, location.search]);
 
-	const handleChange = (e) => {
+	const handleChange = (e: any) => {
 		if (
 			e.target.id === "all" ||
 			e.target.id === "rent" ||
@@ -232,7 +232,7 @@ const Search = () => {
 					Listing results:
 				</h1>
 				<div className="p-7 flex flex-wrap gap-4">
-					{!loading && listings.length === 0 && (
+					{!loading && listings && listings.length === 0 && (
 						<p className="text-xl text-slate-700">No listing found!</p>
 					)}
 					{loading && (
