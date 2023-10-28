@@ -2,10 +2,12 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { FieldValues } from "react-hook-form";
 import { IListing } from "../../@types/listingType";
 
+const baseUrl = `${import.meta.env.VITE_BACKEND_URL}/listing/`;
+
 export const listingApi = createApi({
 	reducerPath: "listingApi",
 	baseQuery: fetchBaseQuery({
-		baseUrl: "http://localhost:8000/api/listing/",
+		baseUrl: baseUrl,
 		credentials: "include",
 	}),
 	tagTypes: ["Listings", "Listing"],

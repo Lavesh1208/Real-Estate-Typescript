@@ -2,10 +2,12 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { IUpdateUser, IUser } from "../../@types/userTypes";
 import { IListing } from "../../@types/listingType";
 
+const baseUrl = `${import.meta.env.VITE_BACKEND_URL}/user/`;
+
 export const userApi = createApi({
 	reducerPath: "userApi",
 	baseQuery: fetchBaseQuery({
-		baseUrl: "http://localhost:8000/api/user/",
+		baseUrl: baseUrl,
 		credentials: "include",
 	}),
 	tagTypes: ["User", "UserListings"],
