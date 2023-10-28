@@ -8,6 +8,8 @@ import {
 } from '../schemas/listing.schema';
 import ErrorHandler from '../utils/ErrorHandler';
 
+type SortOrder = 'asc' | 'desc';
+
 export const createListing = async (
    req: Request<{}, {}, CreateListingInput['body']>,
    res: Response,
@@ -81,29 +83,29 @@ export const getListings = async (
    const limit = Number(req.query.limit) || 9;
    const startIndex = Number(req.query.startIndex) || 0;
 
-   let offer = req.query.offer;
+   let offer: any = req.query.offer;
    if (offer === undefined || offer === 'false') {
       offer = { $in: [false, true] };
    }
 
-   let furnished = req.query.furnished;
+   let furnished: any = req.query.furnished;
    if (furnished === undefined || furnished === 'false') {
       furnished = { $in: [false, true] };
    }
 
-   let parking = req.query.parking;
+   let parking: any = req.query.parking;
    if (parking === undefined || parking === 'false') {
       parking = { $in: [false, true] };
    }
 
-   let type = req.query.type;
+   let type: any = req.query.type;
    if (type === undefined || type === 'all') {
       type = { $in: ['sale', 'rent'] };
    }
 
    const searchTem = req.query.searchTem || '';
 
-   const sort = req.query.sort || 'createdAt';
+   const sort = String(req.query.sort || 'createdAt');
 
    const order = req.query.order || 'desc';
    const listings = await Listing.find({
@@ -113,7 +115,7 @@ export const getListings = async (
       parking,
       type,
    })
-      .sort({ [sort]: order })
+      .sort({ [sort]: order } as { [key: string]: SortOrder | { $meta: any } })
       .limit(limit)
       .skip(startIndex);
 

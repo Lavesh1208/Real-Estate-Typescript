@@ -1,60 +1,26 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { IUser } from '../../@types/userTypes';
+import { createSlice } from "@reduxjs/toolkit";
+import { IUser } from "../../@types/userTypes";
 
-type IntialState = {
-   currentUser: IUser | null;
-   error: string | null;
-};
+interface IUserState {
+	userInfo: IUser | null;
+}
 
-const initialState: IntialState = {
-   currentUser: null,
-   error: null,
-};
+const userInitialState: IUserState = { userInfo: null };
 
 const userSlice = createSlice({
-   name: 'user',
-   initialState,
-   reducers: {
-      signInSuccess: (state, action) => {
-         state.currentUser = action.payload;
-         state.error = null;
-      },
-      signInFailure: (state, action) => {
-         state.error = action.payload;
-      },
-      updateUserSuccess: (state, action) => {
-         state.currentUser = action.payload;
-         state.error = null;
-      },
-      updateUserFailure: (state, action) => {
-         state.error = action.payload;
-      },
-      deleteUserSuccess: (state) => {
-         state.currentUser = null;
-         state.error = null;
-      },
-      deleteUserFailure: (state, action) => {
-         state.error = action.payload;
-      },
-      signOutUserSuccess: (state) => {
-         state.currentUser = null;
-         state.error = null;
-      },
-      signOutUserFailure: (state, action) => {
-         state.error = action.payload;
-      },
-   },
+	name: "user",
+	initialState: userInitialState,
+	reducers: {
+		setUserInfo: (state, action) => {
+			state.userInfo = action.payload;
+		},
+		resetUserInfo: (state) => {
+			state.userInfo = null;
+		},
+	},
 });
 
-export const {
-   signInSuccess,
-   signInFailure,
-   updateUserSuccess,
-   updateUserFailure,
-   deleteUserSuccess,
-   deleteUserFailure,
-   signOutUserSuccess,
-   signOutUserFailure,
-} = userSlice.actions;
+const userActions = userSlice.actions;
+const userReducer = userSlice.reducer;
 
-export default userSlice.reducer;
+export { userActions, userReducer };

@@ -33,8 +33,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 app.use(router);
 
+app.use(express.static(path.join(__dirname, '/client/dist')));
+
 app.all('*', (req, res, next) => {
-   next(new ErrorHandler('Page Not Found', 404));
+   res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
 });
 
 const errorHandler = (

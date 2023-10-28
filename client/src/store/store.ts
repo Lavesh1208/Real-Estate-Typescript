@@ -1,54 +1,36 @@
-import { Store, combineReducers, configureStore } from '@reduxjs/toolkit';
-import { setupListeners } from '@reduxjs/toolkit/dist/query';
-import { authApi } from './api/authApi';
-import { userApi } from './api/userApi';
-import userReducer from './reducers/userReducer';
-import {
-   persistStore,
-   persistReducer,
-   FLUSH,
-   REHYDRATE,
-   PAUSE,
-   PERSIST,
-   PURGE,
-   REGISTER,
-} from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
-import { listingApi } from './api/listingApi';
+import { configureStore } from "@reduxjs/toolkit";
+import { setupListeners } from "@reduxjs/toolkit/dist/query";
+import { authApi } from "./api/authApi";
+import { listingApi } from "./api/listingApi";
+import { userApi } from "./api/userApi";
+import { userReducer } from "./reducers/userReducer";
 
-const rootReducer = combineReducers({
-   user: userReducer,
-   auth: authApi.reducer,
-   userApi: userApi.reducer,
-   listingApi: listingApi.reducer,
-});
+const userInfoFromStorage = localStorage.getItem("user")
+	? JSON.parse(localStorage.getItem("user")!)
+	: null;
 
-const persistConfig = {
-   key: 'root',
-   storage,
-   version: 1,
-   whiteList: ['user'],
+const initialState = {
+	user: { userInfo: userInfoFromStorage },
 };
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
-
-export const store: Store = configureStore({
-   reducer: persistedReducer,
-   //@ts-ignore
-   middleware: (getDefault) =>
-      getDefault({
-         serializableCheck: {
-            ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-         },
-      }).concat([
-         authApi.middleware,
-         userApi.middleware,
-         listingApi.middleware,
-      ]),
+const store = configureStore({
+	reducer: {
+		user: userReducer,
+		[userApi.reducerPath]: userApi.reducer,
+		[listingApi.reducerPath]: listingApi.reducer,
+		[authApi.reducerPath]: authApi.reducer,
+	},
+	preloadedState: initialState,
+	middleware: (getDefault) =>
+		getDefault().concat([
+			userApi.middleware,
+			listingApi.middleware,
+			authApi.middleware,
+		]),
 });
 
 setupListeners(store.dispatch);
 
-export const persistor = persistStore(store);
-
 export type RootState = ReturnType<typeof store.getState>;
+
+export default store;
