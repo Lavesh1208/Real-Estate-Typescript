@@ -7,19 +7,22 @@ import {
    LoginUserInput,
    SignupUserInput,
 } from '../schemas/auth.schema';
+import bcryptjs from 'bcryptjs';
 
 export const signup = async (
    req: Request<{}, {}, SignupUserInput['body']>,
    res: Response,
    next: NextFunction,
 ) => {
-   const userExist = await User.findOne({ email: req.body.email });
+   const { username, email, password } = req.body;
+   const userExist = await User.findOne({ email });
 
    if (userExist) {
       return next(new ErrorHandler('User already exists', 400));
    }
-
-   const user = await User.create(req.body);
+   const hashedPassword = bcryptjs.hashSync(password, 10);
+   const user = new User({ username, email, password: hashedPassword });
+   await user.save();
 
    res.status(201).send(omit(user.toJSON(), 'password'));
 };

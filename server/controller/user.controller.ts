@@ -1,7 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
 import User from '../models/user.model';
 import bcrypt from 'bcryptjs';
-import { GetListingsInput, UpdateUserInput } from '../schemas/user.schema';
+import {
+   GetListingsInput,
+   GetUserInput,
+   UpdateUserInput,
+} from '../schemas/user.schema';
 import ErrorHandler from '../utils/ErrorHandler';
 import { omit, update } from 'lodash';
 import Listing from '../models/listing.model';
@@ -64,4 +68,17 @@ export const getUserListings = async (
    }
    const listings = await Listing.find({ userRef: req.params.id });
    res.status(200).send(listings);
+};
+
+export const getUser = async (
+   req: Request<GetUserInput['params'], {}, {}>,
+   res: Response,
+   next: NextFunction,
+) => {
+   const user = await User.findById(req.params.id);
+   if (!user) {
+      return next(new ErrorHandler('User not found', 404));
+   }
+
+   res.status(200).send(omit(user.toJSON(), 'password'));
 };

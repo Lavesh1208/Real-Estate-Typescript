@@ -30,6 +30,10 @@ const params = {
    }),
 };
 
+export const getUserSchema = object({
+   ...params,
+});
+
 export const updateUserSchema = object({
    ...payload,
 });
@@ -37,6 +41,8 @@ export const updateUserSchema = object({
 export const getListingsSchema = object({
    ...params,
 });
+
+export type GetUserInput = TypeOf<typeof getUserSchema>;
 
 export type UpdateUserInput = TypeOf<typeof updateUserSchema>;
 

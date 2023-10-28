@@ -16,6 +16,7 @@ import { Navigation } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { IListing } from '../@types/listingType';
 import { RootState } from '../store/store';
+import Contact from '../components/Contact';
 
 const Listing = () => {
    SwiperCore.use([Navigation]);
@@ -144,6 +145,7 @@ const Listing = () => {
                            Contact landlord
                         </button>
                      )}
+                  {contact && <Contact listing={listing} />}
                </div>
             </div>
          )}
