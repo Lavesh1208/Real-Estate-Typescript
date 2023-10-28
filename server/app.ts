@@ -14,8 +14,6 @@ dotenv.config();
 
 const app = express();
 
-app.use(express.static(path.join(__dirname, 'views/build')));
-
 app.use(helmet());
 app.use(
    cors({
@@ -33,7 +31,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 app.use(router);
 
-app.use(express.static(path.join(__dirname, '/client/dist')));
+app.use(express.static(path.join(__dirname, '../client/dist')));
 
 app.all('*', (req, res, next) => {
    res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
