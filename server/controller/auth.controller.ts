@@ -51,6 +51,8 @@ export const signin = async (
    res.cookie('access_token', token, {
       httpOnly: true,
       expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      sameSite: 'none',
+      secure: true,
    });
 
    res.status(200).send(omit(user.toJSON(), 'password'));
@@ -69,6 +71,8 @@ export const googleSignin = async (
       res.cookie('access_token', token, {
          httpOnly: true,
          expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+         sameSite: 'none',
+         secure: true,
       });
 
       res.status(200).send(omit(user.toJSON(), 'password'));
@@ -91,6 +95,8 @@ export const googleSignin = async (
       res.cookie('access_token', token, {
          httpOnly: true,
          expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+         sameSite: 'none',
+         secure: true,
       });
 
       res.status(200).send(omit(newUser.toJSON(), 'password'));
