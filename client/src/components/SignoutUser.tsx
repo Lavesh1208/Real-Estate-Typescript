@@ -12,6 +12,7 @@ const SignoutUser = () => {
 		try {
 			await signOut();
 			toast.success("User Signed Out Successfully!");
+			localStorage.removeItem("user");
 			dispatch(userActions.resetUserInfo());
 		} catch (error) {
 			const errorMessage = (error as CustomeErrorType).data?.message;
