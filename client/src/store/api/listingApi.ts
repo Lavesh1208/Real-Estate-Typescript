@@ -19,6 +19,27 @@ export const listingApi = createApi({
 			}),
 			providesTags: ["Listing"],
 		}),
+		getOfferListings: builder.query<IListing[], void>({
+			query: () => ({
+				url: `/get?offer=true&limit=4`,
+				method: "GET",
+			}),
+			providesTags: ["Listings"],
+		}),
+		getRentListings: builder.query<IListing[], void>({
+			query: () => ({
+				url: `/get?type=rent&limit=4`,
+				method: "GET",
+			}),
+			providesTags: ["Listings"],
+		}),
+		getSaleListings: builder.query<IListing[], void>({
+			query: () => ({
+				url: `/get?type=sale&limit=4`,
+				method: "GET",
+			}),
+			providesTags: ["Listings"],
+		}),
 		filterListing: builder.query<IListing[], string>({
 			query: (searchQuery) => ({
 				url: `/get?${searchQuery}`,
@@ -54,6 +75,9 @@ export const listingApi = createApi({
 
 export const {
 	useGetListingQuery,
+	useGetOfferListingsQuery,
+	useGetRentListingsQuery,
+	useGetSaleListingsQuery,
 	useFilterListingQuery,
 	useCreateListingMutation,
 	useDeleteListingMutation,
